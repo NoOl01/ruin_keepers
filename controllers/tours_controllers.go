@@ -115,7 +115,7 @@ func GetScheduleTourById(ctx *gin.Context, db *gorm.DB) {
 // @Tags tours
 // @Param input body database.Entry  true "Данные пользователя"
 // @Success 200 {object} common.ResultWithErrors
-// @Router /tours/signUp [get]
+// @Router /tours/signUpToTour [get]
 func SignUpToTour(ctx *gin.Context, db *gorm.DB) {
 	var entry database.Entry
 	if err := ctx.ShouldBind(&entry); err != nil {

@@ -26,7 +26,7 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			tour.GET("/scheduledTourById", func(ctx *gin.Context) {
 				controllers.GetScheduleTourById(ctx, db)
 			})
-			tour.POST("/signUp", func(ctx *gin.Context) {
+			tour.POST("/signUpToTour", func(ctx *gin.Context) {
 				controllers.SignUpToTour(ctx, db)
 			})
 		}
@@ -45,13 +45,16 @@ func Router(router *gin.Engine, db *gorm.DB) {
 				})
 			}
 			admin.POST("/register", func(ctx *gin.Context) {
-				controllers.RegisterNewAdmin()
+				controllers.RegisterNewAdmin(ctx, db)
 			})
 			admin.POST("/login", func(ctx *gin.Context) {
 				controllers.Login(ctx, db)
 			})
 			admin.POST("/changePassword", func(ctx *gin.Context) {
 				controllers.ChangePassword(ctx, db)
+			})
+			admin.POST("/delete", func(ctx *gin.Context) {
+				controllers.DeleteAdmin(ctx, db)
 			})
 		}
 		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

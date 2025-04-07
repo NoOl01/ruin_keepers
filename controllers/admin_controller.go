@@ -8,8 +8,35 @@ import (
 	"net/http"
 )
 
+// RegisterNewAdmin
+// @Tags admin
+// @Param input body database.Admin true "Данные админа"
+// @Success 200 {object} common.ResultWithErrors
+// @Router /admin/register [post]
 func RegisterNewAdmin(ctx *gin.Context, db *gorm.DB) {
-
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Error: Authorization header is empty",
+		})
+		return
+	}
+	var admin database.Admin
+	if err := ctx.ShouldBind(&admin); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: " + err.Error(),
+		})
+		return
+	}
+	if err := db.Create(&admin).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: " + err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"error": nil,
+	})
 }
 
 // Login
@@ -65,9 +92,10 @@ func Login(ctx *gin.Context, db *gorm.DB) {
 
 // ChangePassword
 // @Tags admin
-// @Param input body database.Admin true "Данные админа"
+// @Param input body common.ChangePassword true "Данные для смены пароля"
+// @Param Authorization header string true "Токен авторизации"
 // @Success 200 {object} common.ResultWithErrors
-// @Router /admin/login [post]
+// @Router /admin/changePassword [post]
 func ChangePassword(ctx *gin.Context, db *gorm.DB) {
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -108,6 +136,11 @@ func ChangePassword(ctx *gin.Context, db *gorm.DB) {
 	})
 }
 
+// DeleteAdmin
+// @Tags admin
+// @Param Authorization header string true "Токен авторизации"
+// @Success 200 {object} common.ResultWithErrors
+// @Router /admin/delete [post]
 func DeleteAdmin(ctx *gin.Context, db *gorm.DB) {
 	adminId := ctx.Query("adminId")
 	authHeader := ctx.GetHeader("Authorization")
