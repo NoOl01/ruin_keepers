@@ -2,6 +2,12 @@ package database
 
 import "time"
 
+type Admin struct {
+	Id       uint   `gorm:"primary_key;auto_increment"`
+	Login    string `gorm:"size:255;unique;not null"`
+	Password string `gorm:"size:255;not null"`
+}
+
 type Tour struct {
 	ID             uint   `gorm:"primaryKey;autoIncrement"`
 	Name           string `gorm:"type:varchar(255)"`

@@ -12,7 +12,7 @@ import (
 func GetAllTours(ctx *gin.Context, db *gorm.DB) {
 	var tour []database.Tour
 
-	result := db.Find(&tour)
+	result := db.Select("Id", "Name", "Place", "Price").Find(&tour)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"result": nil,
@@ -21,6 +21,30 @@ func GetAllTours(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": tour,
+		"error":  nil,
+	})
+}
+
+func GetTourById(ctx *gin.Context, db *gorm.DB) {
+	tourId := ctx.Query("id")
+	if tourId == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"result": nil,
+			"error":  "Error: Tour id (Query) is missing",
+		})
+		return
+	}
+	var tour database.Tour
+	result := db.Preload("Points").First(&tour, tourId)
+	if result.Error != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"result": nil,
+			"error":  "Error: " + result.Error.Error(),
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"result": tour,
 		"error":  nil,

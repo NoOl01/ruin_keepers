@@ -14,6 +14,9 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			tour.GET("/all", func(ctx *gin.Context) {
 				controllers.GetAllTours(ctx, db)
 			})
+			tour.GET("/tourById", func(ctx *gin.Context) {
+				controllers.GetTourById(ctx, db)
+			})
 			tour.POST("/add", func(ctx *gin.Context) {
 				controllers.AddTour(ctx, db)
 			})
