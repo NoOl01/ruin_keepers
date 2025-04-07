@@ -2,7 +2,12 @@ import "./App.css"
 import logo from "./assets/logot.svg"
 import Goth from "./assets/Goth.svg"
 import rec from "./assets/rec.svg"
+import {Link} from "react-router-dom";
+import {useState} from "react";
+import SignupPopup from "./PopUp.tsx";
 export default function About(){
+
+    const [open, setOpen] = useState(false);
     return (
         <>
        <div className="w-full flex flex-col items-center justify-center  bg-white">
@@ -27,8 +32,9 @@ export default function About(){
 
                        <p className="font-bold">9:00-19:00</p>
                        <p className="font-bold">Дата: 9 апреля</p>
-                       <button className="bg-[#FFCF3F] rounded-4xl h-20">Хочу записаться</button>
-                       <button className="text-[#FFCF3F]">Подробнее</button>
+                       <button  onClick={() => setOpen(true)} className="bg-[#FFCF3F] rounded-4xl h-20">Хочу записаться</button>
+                       {open && <SignupPopup onClose={() => setOpen(false)} />}
+                       <Link className="text-center" to="/moregothring">Подробнее</Link>
                    </div>
                    <div className="w-1/3">
                        <img src={rec} alt=""/>
