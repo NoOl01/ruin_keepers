@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"os/user"
 	"strings"
 
 	"example.com/m/v2/database"
@@ -49,12 +48,12 @@ func AddTour(ctx *gin.Context, db *gorm.DB) {
 
 	if err := ctx.BindJSON(&tour); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Error: " + err.Error()
+			"error": "Error: " + err.Error(),
 		})
 		return
 	}
 
-	if err := db.Create(&tour).Error; err != nil{
+	if err := db.Create(&tour).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error: " + err.Error(),
 		})
@@ -65,7 +64,7 @@ func AddTour(ctx *gin.Context, db *gorm.DB) {
 	})
 }
 
-func UpdateTour(ctx *gin.Context, db *gorm.DB){
+func UpdateTour(ctx *gin.Context, db *gorm.DB) {
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
@@ -74,7 +73,7 @@ func UpdateTour(ctx *gin.Context, db *gorm.DB){
 		return
 	}
 
-	tokenString := strings.Trim(authHeader, "Bearer ")
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 	if tokenString == authHeader {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"error": "Error: wrong authorization token",
@@ -82,9 +81,24 @@ func UpdateTour(ctx *gin.Context, db *gorm.DB){
 		return
 	}
 
-	var tour database.Tour
+	// Получаем ID тура из параметров пути
+	tourID := ctx.Param("id")
+	if tourID == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: tour ID is missing in URL",
+		})
+		return
+	}
 
-	if err := db.Model().Update(&tour).Where("id = ?", &tour).Error; err != nil{
+	var updatedData database.Tour
+	if err := ctx.ShouldBindJSON(&updatedData); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: invalid request body",
+		})
+		return
+	}
+
+	if err := db.Model(&database.Tour{}).Where("id = ?", tourID).Updates(updatedData).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error: " + err.Error(),
 		})
@@ -92,6 +106,6 @@ func UpdateTour(ctx *gin.Context, db *gorm.DB){
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"error": nil,
+		"message": "Tour updated successfully",
 	})
 }
