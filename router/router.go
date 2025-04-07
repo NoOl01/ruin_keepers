@@ -15,10 +15,10 @@ func Router(router *gin.Engine, db *gorm.DB) {
 				controllers.GetAllTours(ctx, db)
 			})
 			tour.POST("/add", func(ctx *gin.Context) {
-
+				controllers.AddTour(ctx, db)
 			})
 			tour.POST("/update", func(ctx *gin.Context) {
-
+				controllers.UpdateTour(ctx, db)
 			})
 		}
 		admin := api.Group("/admin")
