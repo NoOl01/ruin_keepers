@@ -8,6 +8,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title Ruin keepers
+// @version 0.1
+// @host localhost:8080
+// @BasePath /api/v1
+// @schemes http
 func main() {
 	err := godotenv.Load()
 	if err != nil {

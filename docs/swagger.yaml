@@ -1,0 +1,97 @@
+basePath: /api/v1
+definitions:
+  common.ResultWithErrors:
+    properties:
+      error:
+        type: string
+      result:
+        type: string
+    type: object
+  database.Entry:
+    properties:
+      comment:
+        type: string
+      count_members:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      is_need_lunch:
+        type: boolean
+      is_need_notify:
+        type: boolean
+      name:
+        type: string
+      phone:
+        type: string
+      scheduled_tour_id:
+        type: integer
+      telegram_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Ruin keepers
+  version: "0.1"
+paths:
+  /tours/all:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      summary: получение туров
+      tags:
+      - tours
+  /tours/scheduledTourById:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      summary: получение расписания туров по id
+      tags:
+      - tours
+  /tours/scheduledTours:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      summary: получение расписания туров
+      tags:
+      - tours
+  /tours/signUp:
+    get:
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/database.Entry'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      tags:
+      - tours
+  /tours/tourById:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      summary: получение туров по id
+      tags:
+      - tours
+schemes:
+- http
+swagger: "2.0"

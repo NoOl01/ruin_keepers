@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -19,5 +20,25 @@ func Connect() *gorm.DB {
 		panic(migrateError)
 	}
 
+	CreateRoot(db)
+
 	return db
+}
+
+func CreateRoot(db *gorm.DB) {
+	var admin Admin
+	result := db.Where("login = ?", "admin").First(&admin)
+	if result.Error == nil {
+		return
+	}
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		panic(result.Error)
+	}
+
+	if err := db.Create(&Admin{
+		Login:    "admin",
+		Password: "admin",
+	}).Error; err != nil {
+		panic(err)
+	}
 }

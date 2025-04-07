@@ -1,0 +1,153 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "title": "Ruin keepers",
+        "contact": {},
+        "version": "0.1"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/tours/all": {
+            "get": {
+                "tags": [
+                    "tours"
+                ],
+                "summary": "получение туров",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/tours/scheduledTourById": {
+            "get": {
+                "tags": [
+                    "tours"
+                ],
+                "summary": "получение расписания туров по id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/tours/scheduledTours": {
+            "get": {
+                "tags": [
+                    "tours"
+                ],
+                "summary": "получение расписания туров",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/tours/signUp": {
+            "get": {
+                "tags": [
+                    "tours"
+                ],
+                "parameters": [
+                    {
+                        "description": "Данные пользователя",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Entry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/tours/tourById": {
+            "get": {
+                "tags": [
+                    "tours"
+                ],
+                "summary": "получение туров по id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.ResultWithErrors": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "database.Entry": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "count_members": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_need_lunch": {
+                    "type": "boolean"
+                },
+                "is_need_notify": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "scheduled_tour_id": {
+                    "type": "integer"
+                },
+                "telegram_id": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

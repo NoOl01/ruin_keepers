@@ -2,7 +2,10 @@ package router
 
 import (
 	"example.com/m/v2/controllers"
+	_ "example.com/m/v2/docs"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -17,24 +20,40 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			tour.GET("/tourById", func(ctx *gin.Context) {
 				controllers.GetTourById(ctx, db)
 			})
-			tour.POST("/add", func(ctx *gin.Context) {
-				controllers.AddTour(ctx, db)
+			tour.GET("/scheduledTours", func(ctx *gin.Context) {
+				controllers.GetScheduledTours(ctx, db)
 			})
-			tour.POST("/update", func(ctx *gin.Context) {
-				controllers.UpdateTour(ctx, db)
+			tour.GET("/scheduledTourById", func(ctx *gin.Context) {
+				controllers.GetScheduleTourById(ctx, db)
+			})
+			tour.POST("/signUp", func(ctx *gin.Context) {
+				controllers.SignUpToTour(ctx, db)
 			})
 		}
 		admin := api.Group("/admin")
 		{
+			adminTour := admin.Group("/tours")
+			{
+				adminTour.POST("/add", func(ctx *gin.Context) {
+					controllers.AddTour(ctx, db)
+				})
+				adminTour.POST("/update", func(ctx *gin.Context) {
+					controllers.UpdateTour(ctx, db)
+				})
+				adminTour.POST("/delete", func(ctx *gin.Context) {
+					controllers.DeleteTour(ctx, db)
+				})
+			}
 			admin.POST("/register", func(ctx *gin.Context) {
-
+				controllers.RegisterNewAdmin()
 			})
 			admin.POST("/login", func(ctx *gin.Context) {
-
+				controllers.Login(ctx, db)
 			})
 			admin.POST("/changePassword", func(ctx *gin.Context) {
-
+				controllers.ChangePassword(ctx, db)
 			})
 		}
+		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 }
