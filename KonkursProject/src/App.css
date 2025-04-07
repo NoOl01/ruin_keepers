@@ -1,0 +1,11 @@
+@import "tailwindcss";
+*{
+    font-family: "Roboto", sans-serif;
+}
+
+.backImg{
+    background-image: url("./assets/subsctrac.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
