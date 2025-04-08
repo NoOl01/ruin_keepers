@@ -2,6 +2,8 @@ package database
 
 import (
 	"errors"
+	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -35,9 +37,14 @@ func CreateRoot(db *gorm.DB) {
 		panic(result.Error)
 	}
 
+	hash, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	if err := db.Create(&Admin{
 		Login:    "admin",
-		Password: "admin",
+		Password: string(hash),
 	}).Error; err != nil {
 		panic(err)
 	}

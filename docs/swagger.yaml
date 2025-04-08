@@ -1,10 +1,31 @@
 basePath: /api/v1
 definitions:
+  common.ChangePassword:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  common.ErrorOnly:
+    properties:
+      error:
+        type: string
+    type: object
   common.ResultWithErrors:
     properties:
       error:
         type: string
       result:
+        type: string
+    type: object
+  database.Admin:
+    properties:
+      id:
+        type: integer
+      login:
+        type: string
+      password:
         type: string
     type: object
   database.Entry:
@@ -36,6 +57,141 @@ info:
   title: Ruin keepers
   version: "0.1"
 paths:
+  /admin/changePassword:
+    post:
+      parameters:
+      - description: Данные для смены пароля
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/common.ChangePassword'
+      - description: Токен авторизации
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      tags:
+      - admin
+  /admin/delete:
+    post:
+      parameters:
+      - description: Токен авторизации
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      tags:
+      - admin
+  /admin/login:
+    post:
+      parameters:
+      - description: Данные админа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/database.Admin'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      tags:
+      - admin
+  /admin/register:
+    post:
+      parameters:
+      - description: Данные админа
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/database.Admin'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ResultWithErrors'
+      tags:
+      - admin
+  /admin/tours/add:
+    post:
+      parameters:
+      - description: Данные тура
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/database.Entry'
+      - description: Токен авторизации
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ErrorOnly'
+      tags:
+      - admin tours
+  /admin/tours/delete:
+    post:
+      parameters:
+      - description: Токен авторизации
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID тура
+        in: query
+        name: tourId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ErrorOnly'
+      tags:
+      - admin tours
+  /admin/tours/update:
+    post:
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/database.Entry'
+      - description: Токен авторизации
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID тура
+        in: query
+        name: tourId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.ErrorOnly'
+      tags:
+      - admin tours
   /tours/all:
     get:
       responses:
@@ -66,7 +222,7 @@ paths:
       summary: получение расписания туров
       tags:
       - tours
-  /tours/signUp:
+  /tours/signUpToTour:
     get:
       parameters:
       - description: Данные пользователя

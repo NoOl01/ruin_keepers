@@ -45,9 +45,10 @@ func RegisterNewAdmin(ctx *gin.Context, db *gorm.DB) {
 // @Success 200 {object} common.ResultWithErrors
 // @Router /admin/login [post]
 func Login(ctx *gin.Context, db *gorm.DB) {
+	var input database.Admin
 	var admin database.Admin
 
-	err := ctx.ShouldBind(&admin)
+	err := ctx.ShouldBind(&input)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"result": nil,
@@ -56,7 +57,7 @@ func Login(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	if err := db.Where("login = ?", admin.Login).First(&admin).Error; err != nil {
+	if err := db.Where("login = ?", input.Login).First(&admin).Error; err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
 			"result": nil,
 			"error":  "Error: User not found: " + err.Error(),
@@ -64,7 +65,7 @@ func Login(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	checkPass := common.CheckPass(admin, db)
+	checkPass := common.CheckPass(input, db)
 	if checkPass != "Ok" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"result": nil,

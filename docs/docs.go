@@ -15,6 +15,219 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/changePassword": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "Данные для смены пароля",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.ChangePassword"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен авторизации",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/delete": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен авторизации",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/login": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "Данные админа",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Admin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/register": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "parameters": [
+                    {
+                        "description": "Данные админа",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Admin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ResultWithErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/tours/add": {
+            "post": {
+                "tags": [
+                    "admin tours"
+                ],
+                "parameters": [
+                    {
+                        "description": "Данные тура",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Entry"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен авторизации",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorOnly"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/tours/delete": {
+            "post": {
+                "tags": [
+                    "admin tours"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен авторизации",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID тура",
+                        "name": "tourId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorOnly"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/tours/update": {
+            "post": {
+                "tags": [
+                    "admin tours"
+                ],
+                "parameters": [
+                    {
+                        "description": "Данные пользователя",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.Entry"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен авторизации",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID тура",
+                        "name": "tourId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorOnly"
+                        }
+                    }
+                }
+            }
+        },
         "/tours/all": {
             "get": {
                 "tags": [
@@ -63,7 +276,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/tours/signUp": {
+        "/tours/signUpToTour": {
             "get": {
                 "tags": [
                     "tours"
@@ -107,6 +320,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "common.ChangePassword": {
+            "type": "object",
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "common.ErrorOnly": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "common.ResultWithErrors": {
             "type": "object",
             "properties": {
@@ -114,6 +346,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "result": {
+                    "type": "string"
+                }
+            }
+        },
+        "database.Admin": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
