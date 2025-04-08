@@ -34,6 +34,7 @@ func main() {
 	}))
 
 	rout.Static("/assets", "./ruin_web/dist/assets")
+	rout.Static("/uploads", "./uploads")
 	rout.LoadHTMLFiles("./ruin_web/dist/index.html")
 
 	rout.NoRoute(func(c *gin.Context) {
