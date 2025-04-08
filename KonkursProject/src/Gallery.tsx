@@ -1,7 +1,11 @@
 import {Swiper, SwiperSlide} from "swiper/react";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Pagination} from "swiper/modules";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import "swiper/css";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import "swiper/css/pagination";
 
 interface Images {
@@ -9,7 +13,7 @@ interface Images {
 }
 
 export default function Gallery() {
-    const [images, setImages] = useState<Images[]>([]);
+    const [images, _] = useState<Images[]>([]);
 
     return (
         <div className="bg-[url(assets/BgRound.svg)] bg-no-repeat bg-center bg-size-[80%]" style={{ height: 'calc(100% - 5rem)' }}>
