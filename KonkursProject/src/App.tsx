@@ -1,11 +1,7 @@
 import './App.css'
 import {BrowserRouter, Routes, Route, NavLink} from "react-router-dom";
 import About from "./About.tsx";
-
 import Gallery from "./Gallery.tsx";
-import MoreGothRing from "./MoreGothRing.tsx";
-
-
 import TourDetail from "./TourDetail.tsx";
 import TourList from "./TourList.tsx";
 import logo from "./assets/logo.svg";
@@ -71,7 +67,6 @@ function App() {
                 <Route path="/" element={<About/>}/>
                 <Route path="/guides" element={<TourList/>}/>
                 <Route path="/gallery" element={<Gallery/>}/>
-                <Route path="/moregothring" element={<MoreGothRing/>}/>
                 <Route path="/tour/:id" element={<TourDetail/>}/>
 
             </Routes>

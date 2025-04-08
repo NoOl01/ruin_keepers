@@ -9,3 +9,6 @@
     background-size: cover;
     background-position: center;
 }
+.Circle{
+    background: radial-gradient(circle at center, #FFCF3F 0%, transparent 60%);
+}
