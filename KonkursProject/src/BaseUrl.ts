@@ -1,1 +1,0 @@
-export const baseUrl:String = "http://localhost:8080";
