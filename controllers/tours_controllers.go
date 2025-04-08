@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"net/http"
+	"strings"
+
+
+	"example.com/m/v2/common"
 	"example.com/m/v2/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"net/http"
-	"strings"
 )
 
 // GetAllTours GetAllTour
@@ -16,7 +19,7 @@ import (
 func GetAllTours(ctx *gin.Context, db *gorm.DB) {
 	var tour []database.Tour
 
-	result := db.Select("Id", "Name", "Place", "Price").Find(&tour)
+	result := db.Preload("ScheduledTours").Preload("Points").Find(&tour)
 	if result.Error != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"result": nil,
@@ -111,6 +114,23 @@ func GetScheduleTourById(ctx *gin.Context, db *gorm.DB) {
 	})
 }
 
+// func GetNearestTour(ctx *gin.Context, db *gorm.DB) {
+// 	var tour database.ScheduledTour
+// 	today := time.Now().UTC().Add(2 * time.Hour)
+
+// 	if err := db.Order("(startAt - ?)::text::bigint ASC", today).First(&tour).Error; err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, gin.H{
+// 			"result": nil,
+// 			"error":  "Error: " + err.Error(),
+// 		})
+// 		return
+// 	}
+// 	ctx.JSON(http.StatusOK, gin.H{
+// 		"result": tour,
+// 		"error":  nil,
+// 	})
+// }
+
 // SignUpToTour @Summary получение туров по id
 // @Tags tours
 // @Param input body database.Entry  true "Данные пользователя"
@@ -168,6 +188,21 @@ func AddTour(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
+	file, err := ctx.FormFile("image")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: no file uploaded",
+		})
+		return
+	}
+	filePath := common.RenameFile(file, tour.Name)
+	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: " + err.Error(),
+		})
+	}
+	tour.Image = filePath
 
 	if err := db.Create(&tour).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{

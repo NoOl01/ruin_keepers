@@ -26,6 +26,9 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			tour.GET("/scheduledTourById", func(ctx *gin.Context) {
 				controllers.GetScheduleTourById(ctx, db)
 			})
+			// tour.GET("/nearestTour", func(ctx *gin.Context) {
+			// 	controllers.GetNearestTour(ctx, db)
+			// })
 			tour.POST("/signUpToTour", func(ctx *gin.Context) {
 				controllers.SignUpToTour(ctx, db)
 			})
@@ -42,6 +45,18 @@ func Router(router *gin.Engine, db *gorm.DB) {
 				})
 				adminTour.POST("/delete", func(ctx *gin.Context) {
 					controllers.DeleteTour(ctx, db)
+				})
+			}
+			adminPoints := admin.Group("/points")
+			{
+				adminPoints.POST("/add", func(ctx *gin.Context) {
+
+				})
+				adminPoints.POST("/update", func(ctx *gin.Context) {
+
+				})
+				adminPoints.POST("/delete", func(ctx *gin.Context) {
+
 				})
 			}
 			admin.POST("/register", func(ctx *gin.Context) {
