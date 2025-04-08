@@ -17,7 +17,7 @@ type Tour struct {
 	Place          string `gorm:"type:varchar(255)"`
 	Price          float64
 	MaxMembers     int
-	Image          string          `gorm:"type:varchar(255)"`
+	Image          string          
 	ScheduledTours []ScheduledTour `gorm:"foreignKey:TourID;constraint:OnDelete:CASCADE"`
 	Points         []Point         `gorm:"foreignKey:TourID;constraint:OnDelete:CASCADE"`
 }

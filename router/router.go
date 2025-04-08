@@ -43,6 +43,9 @@ func Router(router *gin.Engine, db *gorm.DB) {
 				adminTour.POST("/add", func(ctx *gin.Context) {
 					controllers.AddTour(ctx, db)
 				})
+				adminTour.POST("/uploadImage", func(ctx *gin.Context) {
+					controllers.UploadTourImage(ctx, db)
+				})
 				adminTour.POST("/update", func(ctx *gin.Context) {
 					controllers.UpdateTour(ctx, db)
 				})
@@ -53,13 +56,22 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			adminPoints := admin.Group("/points")
 			{
 				adminPoints.POST("/add", func(ctx *gin.Context) {
-
+					controllers.AddPoint(ctx, db)
+				})
+				adminPoints.POST("/uploadImage", func(ctx *gin.Context) {
+					controllers.UploadPointImage(ctx, db)
 				})
 				adminPoints.POST("/update", func(ctx *gin.Context) {
 
 				})
 				adminPoints.POST("/delete", func(ctx *gin.Context) {
 
+				})
+			}
+			adminSchedule := admin.Group("/schedule")
+			{
+				adminSchedule.POST("/add", func(ctx *gin.Context) {
+					controllers.AddSchedule(ctx, db)
 				})
 			}
 			admin.POST("/register", func(ctx *gin.Context) {

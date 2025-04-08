@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
-	"example.com/m/v2/common"
 	"example.com/m/v2/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -49,6 +49,7 @@ func GetTourById(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
 	var tour database.Tour
 	result := db.Preload("Points").First(&tour, tourId)
 	if result.Error != nil {
@@ -58,6 +59,17 @@ func GetTourById(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
+	for i := range tour.Points {
+		if tour.Points[i].Image != "" {
+			tour.Points[i].Image = "http://localhost:8080" + tour.Points[i].Image
+		}
+	}
+
+	if tour.Image != "" {
+		tour.Image = "http://localhost:8080" + tour.Image
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"result": tour,
 		"error":  nil,
@@ -192,21 +204,6 @@ func AddTour(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	file, err := ctx.FormFile("image")
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Error: no file uploaded",
-		})
-		return
-	}
-	filePath := common.RenameFile(file, tour.Name)
-	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error: " + err.Error(),
-		})
-	}
-	tour.Image = filePath
-
 	if err := db.Create(&tour).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error: " + err.Error(),
@@ -214,7 +211,59 @@ func AddTour(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
+		"result": gin.H{
+			"id": tour.ID,
+		},
 		"error": nil,
+	})
+
+}
+
+func UploadTourImage(ctx *gin.Context, db *gorm.DB) {
+	tourId := ctx.DefaultQuery("tourId", "")
+	if tourId == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: Tour id is missing",
+		})
+		return
+	}
+
+	file, err := ctx.FormFile("image")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: no file uploaded",
+		})
+		return
+	}
+
+	filename := fmt.Sprintf("tour_%s_%s", tourId, file.Filename)
+	filePath := fmt.Sprintf("./uploads/tours/%s", filename)
+
+	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: failed to save image",
+		})
+		return
+	}
+	filePath = strings.Trim(filePath, "./")
+	var tour database.Tour
+	if err := db.First(&tour, tourId).Error; err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Error: Tour not found",
+		})
+		return
+	}
+
+	if err := db.Model(&tour).Where("id = ?", tourId).Update("image", filePath).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: " + err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message":   "Image uploaded successfully",
+		"image_url": tour.Image,
 	})
 }
 
