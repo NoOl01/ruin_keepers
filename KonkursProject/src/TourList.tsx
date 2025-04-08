@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import {baseUrl} from "./BaseUrl";
-
+import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {Navigation} from "swiper/modules";
+import "swiper/css";
+import 'swiper/css/navigation';
+import './style.css';
 
 interface Tour {
     ID: number;
@@ -14,35 +16,71 @@ interface Tour {
 
 const TourList: React.FC = () => {
     const [tours, setTours] = useState<Tour[]>([]);
+    useEffect((): void => {
+        const mockTours: Tour[] = [
+            {
+                ID: 1,
+                Name: 'dwadafwgfa',
+                Image: 'dawdawgfea',
+                Place: 'jklfawlkjfaw',
+                Price: 500,
+            },
+            {
+                ID: 2,
+                Name: 'r32gers',
+                Image: 'kugdjthsge',
+                Place: '2t3hrthjdt',
+                Price: 3333,
+            },
+            {
+                ID: 3,
+                Name: '3gwae5',
+                Image: 'afwe451313r',
+                Place: 'jklfawlkjfaw',
+                Price: 53313,
+            },
+            {
+                ID: 4,
+                Name: '12498yiudafwgfa',
+                Image: 'fakhjofea',
+                Place: '423891ilhufaw',
+                Price: 501240,
+            }
+        ]
+        setTours(mockTours);
+    }, [])
 
-    useEffect(() => {
-        axios.get(`${baseUrl}/api/v1/tours/all`)
-            .then((response) => setTours(response.data.result))
-            .catch((error) => console.error("Error fetching tours:", error));
-
-    }, []);
-    console.log(tours)
     return (
         <div className=" flex flex-col justify-center items-center gap-8 mt-20">
             <h1 className="text-4xl font-bold">Все туры</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-9/12">
-            {tours.map((tour) => (
-
-                <div key={tour.ID} className="border rounded-lg p-4 shadow-md hover:shadow-lg transition duration-300">
-
-
-                    <img src={`${baseUrl}/${tour.Image}`}
-                         className="w-full h-48 object-cover rounded-md"/>
-
-
-                    <h3 className="text-xl font-semibold mt-4">{tour.Name}</h3>
-                    <p>{tour.Place}</p>
-                    <p className="text-lg text-gray-600">Price: ${tour.Price}</p>
-                    <Link to={`/tour/${tour.ID}`} className="text-blue-500 hover:underline mt-4 block">View
-                        Details</Link>
-                </div>
-            ))}
-        </div>
+            <div className="w-11/12">
+                <Swiper
+                    navigation={true}
+                    slidesPerView={3}
+                    spaceBetween={90}
+                    modules={[Navigation]}
+                    className="w-11/12 !pl-[80px] !pr-[80px] min-h-[450px] !flex items-center">
+                    {tours.map((tour, index) => (
+                        <SwiperSlide
+                            key={tour.ID}
+                            className="bg-gradient-to-b from-white to-[#FFE1A2] !h-[430px] !flex flex-col justify-center items-center gap-8
+                            border rounded-lg p-4 pt-10 pb-10"
+                        >
+                            <p className="font-bold text-4xl">{`ТУР ${index}`}</p>
+                            <div className="flex justify-between w-10/12">
+                                <img src={tour.Image} alt={tour.Name}/>
+                                <div className="flex flex-col justify-between gap-3 text-xl">
+                                    <p>цена: {tour.Price}</p>
+                                    <p>место: {tour.Place}</p>
+                                    <p>время: {tour.Price}</p>
+                                </div>
+                            </div>
+                            <p className="text-4xl">{tour.Name}</p>
+                            <Link to={`tour/${tour.ID}`} className="bg-black pl-10 pr-10 pt-2 pb-2 rounded-3xl text-amber-400 text-xl">хочу записаться</Link>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
         </div>
     );
 };

@@ -1,0 +1,17 @@
+.swiper-button-next, .swiper-button-prev, .swiper-button-disabled {
+    background: #0000008A !important;
+    border: none !important;
+    height: 100px !important;
+    width: 50px !important;
+    top: var(--swiper-navigation-top-offset, 40%) !important;
+    color: #fff !important;
+    border-radius: 30px !important;
+    opacity: 1 !important;
+}
+.dawd{
+    background: url("assets/BgRound.svg") no-repeat center center fixed;
+}
+
+html, body, #root {
+    @apply h-full;
+}
