@@ -15,7 +15,7 @@ func Connect() *gorm.DB {
 		panic(err)
 	}
 
-	migrateError := db.AutoMigrate(&Tour{}, &ScheduledTour{}, &Point{}, &Entry{})
+	migrateError := db.AutoMigrate(&Tour{}, &ScheduledTour{}, &Point{}, &Entry{}, &Admin{})
 	if migrateError != nil {
 		panic(migrateError)
 	}
