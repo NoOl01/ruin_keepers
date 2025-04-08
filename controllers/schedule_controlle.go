@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"bytes"
-	"fmt"
-	"io"
 	"net/http"
+	"strings"
 
 	"example.com/m/v2/database"
 	"github.com/gin-gonic/gin"
@@ -14,31 +12,39 @@ import (
 func AddSchedule(ctx *gin.Context, db *gorm.DB) {
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Error: Authorization header is missing",
+		})
 		return
 	}
-	
-	body, _ := ctx.GetRawData()
-	fmt.Println("RAW BODY:", string(body))
-	ctx.Request.Body = io.NopCloser(bytes.NewBuffer(body)) // иначе BindJSON не сможет прочитать повторно
+
+	tokenString := strings.Trim(authHeader, "Bearer ")
+	if tokenString == authHeader {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Error: wrong authorization token",
+		})
+		return
+	}
 
 	var schedule database.ScheduledTour
-	if err := ctx.ShouldBindJSON(&schedule); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid input", "details": err.Error()})
-		return
-	}
 
-	fmt.Printf("Received: %+v\n", schedule)
-
-	if schedule.TourID == 0 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "tour_id is required"})
+	if err := ctx.BindJSON(&schedule); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: " + err.Error(),
+		})
 		return
 	}
 
 	if err := db.Create(&schedule).Error; err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: " + err.Error(),
+		})
 		return
 	}
-
-	ctx.JSON(http.StatusOK, gin.H{"error": nil, "id": schedule.ID})
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": gin.H{
+			"id": schedule.ID,
+		},
+		"error": nil,
+	})
 }

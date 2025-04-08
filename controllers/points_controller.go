@@ -1,11 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
-	"fmt"
 
-	"example.com/m/v2/common"
 	"example.com/m/v2/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,21 +36,6 @@ func AddPoint(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	file, err := ctx.FormFile("image")
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Error: no file uploaded",
-		})
-		return
-	}
-	filePath := common.RenameFile(file, point.Name)
-	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error: " + err.Error(),
-		})
-	}
-	point.Image = filePath
-
 	if err := db.Create(&point).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error: " + err.Error(),
@@ -59,6 +43,9 @@ func AddPoint(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
+		"result": gin.H{
+			"id": point.ID,
+		},
 		"error": nil,
 	})
 }
@@ -67,7 +54,7 @@ func UploadPointImage(ctx *gin.Context, db *gorm.DB) {
 	pointId := ctx.DefaultQuery("pointId", "")
 	if pointId == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": "Error: Point id is missing",
+			"error": "Error: Tour id is missing",
 		})
 		return
 	}
@@ -80,8 +67,8 @@ func UploadPointImage(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 
-	filename := fmt.Sprintf("point_%s_%s", pointId, file.Filename)
-	filePath := fmt.Sprintf("./uploads/points/%s", filename)
+	filename := fmt.Sprintf("tour_%s_%s", pointId, file.Filename)
+	filePath := fmt.Sprintf("./uploads/tours/%s", filename)
 
 	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -89,19 +76,18 @@ func UploadPointImage(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
-
+	filePath = strings.Trim(filePath, "./")
 	var point database.Point
 	if err := db.First(&point, pointId).Error; err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{
-			"error": "Error: Point not found",
+			"error": "Error: Tour not found",
 		})
 		return
 	}
 
-	point.Image = "/uploads/points/" + filename
-	if err := db.Save(&point).Error; err != nil {
+	if err := db.Model(&point).Where("id = ?", pointId).Update("image", filePath).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Error: failed to update point with image path",
+			"error": "Error: " + err.Error(),
 		})
 		return
 	}
