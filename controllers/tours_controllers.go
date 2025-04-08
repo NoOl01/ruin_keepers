@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"bytes"
 	"example.com/m/v2/database"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -47,6 +49,7 @@ func GetTourById(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
 	var tour database.Tour
 	result := db.Preload("Points").First(&tour, tourId)
 	if result.Error != nil {
@@ -56,6 +59,19 @@ func GetTourById(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
+	// Проверка и обновление пути к изображениям
+	for i := range tour.Points {
+		if tour.Points[i].Image != "" {
+			tour.Points[i].Image = "http://localhost:8080" + tour.Points[i].Image
+		}
+	}
+
+	if tour.Image != "" {
+		tour.Image = "http://localhost:8080" + tour.Image
+	}
+
+	// Ответ с туром и его точками
 	ctx.JSON(http.StatusOK, gin.H{
 		"result": tour,
 		"error":  nil,
@@ -215,17 +231,21 @@ func GetScheduleTourById(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 	var tour database.ScheduledTour
-	if err := db.Model(&database.ScheduledTour{}).Where("TourId = ?", tourId).Preload("Points").First(&tour).Error; err != nil {
+	if err := db.Where("tour_id = ?", tourId).First(&tour).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"result": nil,
+				"error":  "No schedule found for this tour",
+			})
+			return
+		}
+
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"result": nil,
 			"error":  "Error: " + err.Error(),
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"result": tour,
-		"error":  nil,
-	})
 }
 
 // SignUpToTour @Summary получение туров по id
@@ -293,7 +313,68 @@ func AddTour(ctx *gin.Context, db *gorm.DB) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
+		"result": gin.H{
+			"id": tour.ID,
+		},
 		"error": nil,
+	})
+
+}
+
+func AddSchedule(ctx *gin.Context, db *gorm.DB) {
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		return
+	}
+
+	// 👇 логируем тело запроса
+	body, _ := ctx.GetRawData()
+	fmt.Println("RAW BODY:", string(body))
+	ctx.Request.Body = io.NopCloser(bytes.NewBuffer(body)) // иначе BindJSON не сможет прочитать повторно
+
+	var schedule database.ScheduledTour
+	if err := ctx.ShouldBindJSON(&schedule); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid input", "details": err.Error()})
+		return
+	}
+
+	fmt.Printf("Received: %+v\n", schedule)
+
+	if schedule.TourID == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "tour_id is required"})
+		return
+	}
+
+	if err := db.Create(&schedule).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"error": nil, "id": schedule.ID})
+}
+
+func AddPoint(ctx *gin.Context, db *gorm.DB) {
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		return
+	}
+
+	var point database.Point
+	if err := ctx.ShouldBindJSON(&point); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
+		return
+	}
+
+	if err := db.Create(&point).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"error": nil,
+		"id":    point.ID,
 	})
 }
 

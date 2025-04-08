@@ -21,6 +21,16 @@ func RegisterNewAdmin(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
+	// ✅ Проверка токена
+	_, err := common.JwtDecode(authHeader)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Invalid token",
+		})
+		return
+	}
+
 	var admin database.Admin
 	if err := ctx.ShouldBind(&admin); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -28,12 +38,14 @@ func RegisterNewAdmin(ctx *gin.Context, db *gorm.DB) {
 		})
 		return
 	}
+
 	if err := db.Create(&admin).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Error: " + err.Error(),
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"error": nil,
 	})

@@ -52,11 +52,19 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			})
 			adminPoint := admin.Group("/points")
 			{
+				adminPoint.POST("/add", func(ctx *gin.Context) {
+					controllers.AddPoint(ctx, db)
+				})
 				adminPoint.POST("/uploadImage", func(ctx *gin.Context) {
 					controllers.UploadPointImage(ctx, db)
 				})
 			}
-
+			adminSchedule := admin.Group("/schedule")
+			{
+				adminSchedule.POST("/add", func(ctx *gin.Context) {
+					controllers.AddSchedule(ctx, db)
+				})
+			}
 			admin.POST("/login", func(ctx *gin.Context) {
 				controllers.Login(ctx, db)
 			})

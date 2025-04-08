@@ -24,22 +24,22 @@ type Tour struct {
 
 // ScheduledTour - таблица расписания туров
 type ScheduledTour struct {
-	ID      uint `gorm:"primaryKey;autoIncrement"`
-	TourID  uint `gorm:"index;constraint:OnDelete:CASCADE"`
-	StartAt time.Time
-	EndAt   time.Time
-	Guide   string  `gorm:"type:varchar(255)"`
-	Entries []Entry `gorm:"foreignKey:ScheduledTourID;constraint:OnDelete:CASCADE"`
+	ID      uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	TourID  uint      `gorm:"index;constraint:OnDelete:CASCADE" json:"tour_id"`
+	StartAt time.Time `json:"start_at"`
+	EndAt   time.Time `json:"end_at"`
+	Guide   string    `json:"guide"`
+	Entries []Entry   `gorm:"foreignKey:ScheduledTourID;constraint:OnDelete:CASCADE"`
 }
 
 // Point - таблица мест для туров
 type Point struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
-	TourID      uint   `gorm:"index;constraint:OnDelete:CASCADE"`
-	Number      int    // ???
-	Description string `gorm:"type:text"`
-	Name        string `gorm:"type:varchar(255)"`
-	Image       string `gorm:"type:varchar(255)"`
+	TourID      uint   `gorm:"index;constraint:OnDelete:CASCADE" json:"tour_id"`
+	Number      int    `json:"number"`
+	Description string `gorm:"type:text" json:"description"`
+	Name        string `gorm:"type:varchar(255)" json:"name"`
+	Image       string `gorm:"type:varchar(255)" json:"image"`
 }
 
 // Entry - таблица записей на тур

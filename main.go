@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"time"
 )
 
 // @title Ruin keepers
@@ -19,7 +20,16 @@ func main() {
 		panic(err)
 	}
 	rout := gin.Default()
+	rout.Static("/uploads", "./uploads")
 
+	rout.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"}, // или "*" для всех
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	db := database.Connect()
 
 	rout.Use(cors.Default())
