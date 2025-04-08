@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {baseUrl} from "./BaseUrl";
+
 
 interface Tour {
     ID: number;
@@ -14,7 +16,7 @@ const TourList: React.FC = () => {
     const [tours, setTours] = useState<Tour[]>([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/tours/all")
+        axios.get(`${baseUrl}/api/v1/tours/all`)
             .then((response) => setTours(response.data.result))
             .catch((error) => console.error("Error fetching tours:", error));
 
@@ -27,9 +29,9 @@ const TourList: React.FC = () => {
                 <div key={tour.ID} className="border rounded-lg p-4 shadow-md hover:shadow-lg transition duration-300">
 
 
-                    <img src={`http://localhost:8080${tour.Image}`} alt={tour.Name}
+                    <img src={`${baseUrl}${tour.Image}`} alt={tour.Name}
                          className="w-full h-48 object-cover rounded-md"/>
-                    <div>{`http://localhost:8080${tour.Image}`}</div>
+                    <div>{`${baseUrl}/${tour.Image}`}</div>
 
                     <h3 className="text-xl font-semibold mt-4">{tour.Name}</h3>
                     <p>{tour.Place}</p>

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import axios from "axios"
+import {baseUrl} from "../BaseUrl.ts";
 
 export default function AdminDelete() {
     const [adminId, setAdminId] = useState("")
@@ -7,7 +8,7 @@ export default function AdminDelete() {
 
     const handleDelete = async () => {
         try {
-            await axios.post(`http://localhost:8080/api/v1/admin/delete?adminId=${adminId}`, {}, {
+            await axios.post(`${baseUrl}/api/v1/admin/delete?adminId=${adminId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             alert("Админ удалён")

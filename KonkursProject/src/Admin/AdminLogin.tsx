@@ -1,6 +1,7 @@
 import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import {baseUrl} from "../BaseUrl.ts";
 
 export default function AdminLogin() {
     const [login, setLogin] = useState("")
@@ -9,7 +10,7 @@ export default function AdminLogin() {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post("http://localhost:8080/api/v1/admin/login", { login, password })
+            const res = await axios.post(`${baseUrl}/api/v1/admin/login`, { login, password })
             const token = res.data.result.result
             localStorage.setItem("token", token)
             navigate("/admin/dashboard")

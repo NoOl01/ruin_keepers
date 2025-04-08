@@ -1,6 +1,7 @@
 import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import {baseUrl} from "../BaseUrl.ts";
 
 type Point = {
     name: string
@@ -32,7 +33,7 @@ export default function AdminCreateTour() {
     const handleSubmit = async () => {
         try {
             // 1. Создание тура
-            const tourRes = await axios.post("http://localhost:8080/api/v1/admin/tours/add", {
+            const tourRes = await axios.post(`${baseUrl}/api/v1/admin/tours/add`, {
                 name,
                 description,
                 place,
@@ -51,7 +52,7 @@ export default function AdminCreateTour() {
             if (image) {
                 const formData = new FormData()
                 formData.append("image", image)
-                await axios.post(`http://localhost:8080/api/v1/admin/tours/uploadImage?tourId=${tourId}`, formData, {
+                await axios.post(`${baseUrl}/api/v1/admin/tours/uploadImage?tourId=${tourId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "multipart/form-data"
@@ -77,7 +78,7 @@ export default function AdminCreateTour() {
                         description: point.description,
                         number: point.number
                     })
-                    const pointRes = await axios.post("http://localhost:8080/api/v1/admin/points/add", {
+                    const pointRes = await axios.post(`${baseUrl}/api/v1/admin/points/add`, {
                         tour_id: numericTourId, // <= сюда
                         name: point.name,
                         description: point.description,
@@ -93,7 +94,7 @@ export default function AdminCreateTour() {
                     if (point.image && pointId) {
                         const pointImg = new FormData()
                         pointImg.append("image", point.image)
-                        await axios.post(`http://localhost:8080/api/v1/admin/points/uploadImage?pointId=${pointId}`, pointImg, {
+                        await axios.post(`${baseUrl}/api/v1/admin/points/uploadImage?pointId=${pointId}`, pointImg, {
                             headers: {
                                 Authorization: `Bearer ${token}`,
                                 "Content-Type": "multipart/form-data"
@@ -111,7 +112,7 @@ export default function AdminCreateTour() {
 
             // 4. Добавление расписания
             try {
-                await axios.post("http://localhost:8080/api/v1/admin/schedule/add", {
+                await axios.post(`${baseUrl}/api/v1/admin/schedule/add`, {
                     tour_id: tourId,
                     start_at: new Date(startAt).toISOString(),
                     end_at: new Date(endAt).toISOString(),

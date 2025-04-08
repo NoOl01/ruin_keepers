@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import {baseUrl} from "../BaseUrl.ts";
 
 export default function AdminRegister() {
     const [login, setLogin] = useState("")
@@ -18,7 +19,7 @@ export default function AdminRegister() {
 
     const handleRegister = async () => {
         try {
-            await axios.post("http://localhost:8080/api/v1/admin/register", {
+            await axios.post(`${baseUrl}/api/v1/admin/register`, {
                 login,
                 password
             }, {
