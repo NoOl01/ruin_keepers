@@ -62,9 +62,12 @@ export default function About() {
                 </div>
             </div>
 
-            <div className="w-full flex flex-col items-center justify-center  relative gap-4 bg-inherit">
-                <div className="p-32">
+            <div className="w-full flex flex-col items-center justify-center  relative gap-4 bg-inherit mt-20 mb-20">
+                <div className=" rounded-2xl bg-[#FFCD61] w-9/12 p-32 flex justify-center items-start gap-8 flex-col">
+                    <h1 className="text-6xl font-bold ">Присоидиняйтесь
+                        к хранителям </h1>
 
+                    <Link to="/guides" className="bg-black rounded-4xl text-white p-6">Хочу записаться</Link>
                 </div>
 
             </div>
