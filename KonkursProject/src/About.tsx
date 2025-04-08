@@ -1,14 +1,49 @@
 import "./App.css"
 import logo from "./assets/logot.svg"
 
-import rec from "./assets/Put.svg"
 import {Link} from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import SignupPopup from "./PopUp.tsx";
 
 import news from "./assets/News.svg"
+import axios from "axios";
+import {baseUrl} from "./BaseUrl.ts";
 
+interface Point {
+    ID: number;
+    Name: string;
+    Description: string;
+    Image: string;
+}
+interface Sheduled_tour {
+    ID: number;
+    TourID: number;
+    StartAt: string;
+    EndAt: string;
+    Guide: string;
+
+}
+
+interface Tour {
+    ID: number;
+    Name: string;
+    Description: string;
+    Place: string;
+    Price: number;
+    Image: string;
+    Points: Point[];
+    Sheduled_tour: Sheduled_tour[];
+}
 export default function About() {
+
+
+    const [tour, setTour] = useState<Tour | null>(null);
+
+    useEffect(() => {
+        axios.get(`${baseUrl}/api/v1/tours/nearestTour`)
+            .then((response) => setTour(response.data.result))
+            .catch((error) => console.error("Error fetching tour details:", error));
+    },[]);
 
     const [open, setOpen] = useState(false);
     return (
@@ -27,18 +62,17 @@ export default function About() {
                 </div>
 
                 <div className="w-full flex flex-col items-center justify-center  relative bottom-50 gap-4 bg-inherit">
-                    <h1 className="text-6xl p-10 mt-10">Готическое кольцо</h1>
+                    <h1 className="text-6xl p-10 mt-10">{tour?.Name}</h1>
                     <div className={"flex justify-center items-center gap-8 w-full"}>
-                        <img className="w-1/2" src={rec} alt=""/>
+                        <img className="w-1/2" src={`${baseUrl}/${tour?.Image}`} alt=""/>
                         <div className="flex justify-center flex-col items-center gap-8 w-1/3">
-                            <p className="text-2xl text-center">В путешествии вы увидите достопримечательности «Готического кольца», познакомитесь с
-                                людьми, которые возрождают историческое наследие, услышите много захватывающих рассказов
-                                об исторических памятниках, личностях и событиях нашего края, узнаете об идее эстетики
-                                руин и работе нашего движения, и, наконец, поймете, почему мы все живем в огромном музее
-                                под открытым небом!</p>
+                            <p className="text-2xl text-center">{tour?.Description}</p>
                             <div className="text-center text-xl">
-                                <p>Время: 9:00 - 19:00 </p>
-                                <p>Дата: 9 апреля</p>
+                                <p>{tour?.Sheduled_tour?.map((tour, index) => (
+                                    <span key={index}>{tour.StartAt} - {tour.EndAt}</span>
+                                ))}</p>
+
+
                             </div>
 
                             <div className="flex flex-col items-center gap-8 w-full">

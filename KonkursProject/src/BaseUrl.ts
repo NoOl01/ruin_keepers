@@ -1,1 +1,1 @@
-export const baseUrl:String = "https://93t85znyjq9z.share.zrok.io";
+export const baseUrl:String = "http://localhost:8080";

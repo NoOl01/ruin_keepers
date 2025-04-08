@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import {baseUrl} from "../BaseUrl.ts";
+import AdminDashboard from "./AdminDashboard.tsx";
 
 export default function AdminRegister() {
     const [login, setLogin] = useState("")
@@ -42,6 +43,7 @@ export default function AdminRegister() {
             <input className="input" placeholder="Логин" value={login} onChange={(e) => setLogin(e.target.value)} />
             <input className="input" type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} />
             <button className="btn-primary mt-4" onClick={handleRegister}>Создать администратора</button>
+            <AdminDashboard></AdminDashboard>
         </div>
     )
 }

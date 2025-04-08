@@ -2,6 +2,7 @@ import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import {baseUrl} from "../BaseUrl.ts";
+import AdminDashboard from "./AdminDashboard.tsx";
 
 type Point = {
     name: string
@@ -174,6 +175,7 @@ export default function AdminCreateTour() {
             <input className="input" placeholder="Гид" value={guide} onChange={e => setGuide(e.target.value)} />
 
             <button className="btn-primary mt-4" onClick={handleSubmit}>Создать тур</button>
+            <AdminDashboard></AdminDashboard>
         </div>
     )
 }
