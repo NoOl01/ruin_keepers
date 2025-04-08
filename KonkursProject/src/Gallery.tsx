@@ -1,15 +1,14 @@
 import {Swiper, SwiperSlide} from "swiper/react";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Pagination} from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
+
 
 interface Images {
     Image: string;
 }
 
 export default function Gallery() {
-    const [images, setImages] = useState<Images[]>([]);
+    const [images] = useState<Images[]>([]);
 
     return (
         <div className="bg-[url(assets/BgRound.svg)] bg-no-repeat bg-center bg-size-[80%]" style={{ height: 'calc(100% - 5rem)' }}>
