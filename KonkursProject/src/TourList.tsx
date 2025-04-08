@@ -66,7 +66,7 @@ const TourList: React.FC = () => {
                             className="bg-gradient-to-b from-white to-[#FFE1A2] !h-[430px] !flex flex-col justify-center items-center gap-8
                             border rounded-lg p-4 pt-10 pb-10"
                         >
-                            <p className="font-bold text-4xl">{`ТУР ${index}`}</p>
+                            <p className="font-bold text-4xl">{`ТУР ${index + 1}`}</p>
                             <div className="flex justify-between w-10/12">
                                 <img src={tour.Image} alt={tour.Name}/>
                                 <div className="flex flex-col justify-between gap-3 text-xl">
