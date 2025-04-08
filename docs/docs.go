@@ -72,6 +72,14 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/getAll": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "responses": {}
+            }
+        },
         "/admin/login": {
             "post": {
                 "tags": [

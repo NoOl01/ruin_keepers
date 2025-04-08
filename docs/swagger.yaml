@@ -93,6 +93,11 @@ paths:
             $ref: '#/definitions/common.ResultWithErrors'
       tags:
       - admin
+  /admin/getAll:
+    get:
+      responses: {}
+      tags:
+      - admin
   /admin/login:
     post:
       parameters:

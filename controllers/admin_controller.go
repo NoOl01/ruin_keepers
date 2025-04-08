@@ -1,12 +1,40 @@
 package controllers
 
 import (
+	"net/http"
+
 	"example.com/m/v2/common"
 	"example.com/m/v2/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"net/http"
 )
+
+// GetAllAdmins
+// @Tags admin
+// @Succes 200 {object} common.ResultWithErrors
+// @Router /admin/getAll [get]
+func GetAllAdmins(ctx *gin.Context, db *gorm.DB) {
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"result": nil,
+			"error":  "Error: auth header is missing",
+		})
+		return
+	}
+	var admins []database.Admin
+	if err := db.Find(&admins).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"result": nil,
+			"error":  "Error: " + err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": admins,
+		"error":  nil,
+	})
+}
 
 // RegisterNewAdmin
 // @Tags admin

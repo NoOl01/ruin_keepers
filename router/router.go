@@ -35,6 +35,9 @@ func Router(router *gin.Engine, db *gorm.DB) {
 		}
 		admin := api.Group("/admin")
 		{
+			admin.GET("/getAll", func(ctx *gin.Context) {
+				controllers.GetAllAdmins(ctx, db)
+			})
 			adminTour := admin.Group("/tours")
 			{
 				adminTour.POST("/add", func(ctx *gin.Context) {
