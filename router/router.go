@@ -26,9 +26,9 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			tour.GET("/scheduledTourById", func(ctx *gin.Context) {
 				controllers.GetScheduleTourById(ctx, db)
 			})
-			// tour.GET("/nearestTour", func(ctx *gin.Context) {
-			// 	controllers.GetNearestTour(ctx, db)
-			// })
+			tour.GET("/nearestTour", func(ctx *gin.Context) {
+				controllers.GetNearestTour(ctx, db)
+			})
 			tour.POST("/signUpToTour", func(ctx *gin.Context) {
 				controllers.SignUpToTour(ctx, db)
 			})

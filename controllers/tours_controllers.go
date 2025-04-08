@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strings"
-
+	"time"
 
 	"example.com/m/v2/common"
 	"example.com/m/v2/database"
@@ -114,22 +114,25 @@ func GetScheduleTourById(ctx *gin.Context, db *gorm.DB) {
 	})
 }
 
-// func GetNearestTour(ctx *gin.Context, db *gorm.DB) {
-// 	var tour database.ScheduledTour
-// 	today := time.Now().UTC().Add(2 * time.Hour)
+func GetNearestTour(ctx *gin.Context, db *gorm.DB) {
+	var tour database.ScheduledTour
 
-// 	if err := db.Order("(startAt - ?)::text::bigint ASC", today).First(&tour).Error; err != nil {
-// 		ctx.JSON(http.StatusInternalServerError, gin.H{
-// 			"result": nil,
-// 			"error":  "Error: " + err.Error(),
-// 		})
-// 		return
-// 	}
-// 	ctx.JSON(http.StatusOK, gin.H{
-// 		"result": tour,
-// 		"error":  nil,
-// 	})
-// }
+	if err := db.
+		Where("start_at >= ?", time.Now()).
+		Order("start_at ASC").
+		First(&tour).
+		Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"result": nil,
+			"error":  "Error: " + err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"result": tour,
+		"error":  nil,
+	})
+}
 
 // SignUpToTour @Summary получение туров по id
 // @Tags tours
