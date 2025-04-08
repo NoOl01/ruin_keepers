@@ -47,6 +47,16 @@ func Router(router *gin.Engine, db *gorm.DB) {
 			admin.POST("/register", func(ctx *gin.Context) {
 				controllers.RegisterNewAdmin(ctx, db)
 			})
+			adminTour.POST("/uploadImage", func(ctx *gin.Context) {
+				controllers.UploadTourImage(ctx, db)
+			})
+			adminPoint := admin.Group("/points")
+			{
+				adminPoint.POST("/uploadImage", func(ctx *gin.Context) {
+					controllers.UploadPointImage(ctx, db)
+				})
+			}
+
 			admin.POST("/login", func(ctx *gin.Context) {
 				controllers.Login(ctx, db)
 			})

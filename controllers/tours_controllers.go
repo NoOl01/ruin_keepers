@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"example.com/m/v2/database"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -58,6 +59,122 @@ func GetTourById(ctx *gin.Context, db *gorm.DB) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"result": tour,
 		"error":  nil,
+	})
+}
+
+// UploadTourImage @Summary загрузка изображения для тура
+// @Tags admin tours
+// @Param tourId query string true "ID тура"
+// @Param image formData file true "Изображение"
+// @Success 200 {object} common.ErrorOnly
+// @Router /admin/tours/uploadImage [post]
+func UploadTourImage(ctx *gin.Context, db *gorm.DB) {
+	tourId := ctx.DefaultQuery("tourId", "")
+	if tourId == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: Tour id is missing",
+		})
+		return
+	}
+
+	file, err := ctx.FormFile("image")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: no file uploaded",
+		})
+		return
+	}
+
+	// Генерация имени для картинки
+	filename := fmt.Sprintf("tour_%s_%s", tourId, file.Filename)
+	filePath := fmt.Sprintf("./uploads/tours/%s", filename)
+
+	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: failed to save image",
+		})
+		return
+	}
+
+	// Обновляем запись тура с путем к картинке
+	var tour database.Tour
+	if err := db.First(&tour, tourId).Error; err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Error: Tour not found",
+		})
+		return
+	}
+
+	// Обновление пути к картинке в базе данных
+	tour.Image = "/uploads/tours/" + filename
+	if err := db.Save(&tour).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: failed to update tour with image path",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message":   "Image uploaded successfully",
+		"image_url": tour.Image,
+	})
+}
+
+// UploadPointImage @Summary загрузка изображения для поинта
+// @Tags admin points
+// @Param pointId query string true "ID поинта"
+// @Param image formData file true "Изображение"
+// @Success 200 {object} common.ErrorOnly
+// @Router /admin/points/uploadImage [post]
+func UploadPointImage(ctx *gin.Context, db *gorm.DB) {
+	pointId := ctx.DefaultQuery("pointId", "")
+	if pointId == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: Point id is missing",
+		})
+		return
+	}
+
+	file, err := ctx.FormFile("image")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error: no file uploaded",
+		})
+		return
+	}
+
+	// Генерация имени для картинки
+	filename := fmt.Sprintf("point_%s_%s", pointId, file.Filename)
+	filePath := fmt.Sprintf("./uploads/points/%s", filename)
+
+	if err := ctx.SaveUploadedFile(file, filePath); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: failed to save image",
+		})
+		return
+	}
+
+	// Обновляем запись поинта с путем к картинке
+	var point database.Point
+	if err := db.First(&point, pointId).Error; err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"error": "Error: Point not found",
+		})
+		return
+	}
+
+	// Обновление пути к картинке в базе данных
+	point.Image = "/uploads/points/" + filename
+	if err := db.Save(&point).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Error: failed to update point with image path",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message":   "Image uploaded successfully",
+		"image_url": point.Image,
 	})
 }
 
