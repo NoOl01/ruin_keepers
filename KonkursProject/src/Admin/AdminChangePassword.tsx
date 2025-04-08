@@ -1,5 +1,7 @@
 import { useState } from "react"
 import axios from "axios"
+import {baseUrl} from "../BaseUrl.ts";
+import AdminDashboard from "./AdminDashboard.tsx";
 
 export default function AdminChangePassword() {
     const [oldPass, setOldPass] = useState("")
@@ -8,7 +10,7 @@ export default function AdminChangePassword() {
 
     const handleChange = async () => {
         try {
-            await axios.post("http://localhost:8080/api/v1/admin/changePassword", {
+            await axios.post(`${baseUrl}api/v1/admin/changePassword`, {
                 old_password: oldPass,
                 new_password: newPass
             }, {
@@ -22,6 +24,7 @@ export default function AdminChangePassword() {
 
     return (
         <div className="p-6 max-w-md mx-auto">
+            <AdminDashboard></AdminDashboard>
             <h1 className="text-2xl font-bold mb-4">Смена пароля</h1>
             <input className="input" type="password" placeholder="Старый пароль" value={oldPass} onChange={e => setOldPass(e.target.value)} />
             <input className="input" type="password" placeholder="Новый пароль" value={newPass} onChange={e => setNewPass(e.target.value)} />

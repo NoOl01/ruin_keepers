@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {baseUrl} from "./BaseUrl";
+
 
 interface Tour {
     ID: number;
@@ -14,22 +16,24 @@ const TourList: React.FC = () => {
     const [tours, setTours] = useState<Tour[]>([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/tours/all")
+        axios.get(`${baseUrl}/api/v1/tours/all`)
             .then((response) => setTours(response.data.result))
             .catch((error) => console.error("Error fetching tours:", error));
 
     }, []);
     console.log(tours)
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className=" flex flex-col justify-center items-center gap-8 mt-20">
+            <h1 className="text-4xl font-bold">Все туры</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-9/12">
             {tours.map((tour) => (
 
                 <div key={tour.ID} className="border rounded-lg p-4 shadow-md hover:shadow-lg transition duration-300">
 
 
-                    <img src={`http://localhost:8080${tour.Image}`} alt={tour.Name}
+                    <img src={`${baseUrl}/${tour.Image}`}
                          className="w-full h-48 object-cover rounded-md"/>
-                    <div>{`http://localhost:8080${tour.Image}`}</div>
+
 
                     <h3 className="text-xl font-semibold mt-4">{tour.Name}</h3>
                     <p>{tour.Place}</p>
@@ -38,6 +42,7 @@ const TourList: React.FC = () => {
                         Details</Link>
                 </div>
             ))}
+        </div>
         </div>
     );
 };
