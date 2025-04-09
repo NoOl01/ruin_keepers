@@ -10,6 +10,7 @@ import "swiper/css";
 // @ts-expect-error
 import "swiper/css/navigation";
 import axios from "axios";
+import Modal from "./Components/Modal.tsx";
 
 interface Tour {
     id: number;
@@ -23,6 +24,7 @@ interface Tour {
 
 const TourList: React.FC = () => {
     const [tours, setTours] = useState<Tour[]>([]);
+    const [isModalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         axios.get("../api/v1/tours").then(r => setTours(r.data.data));
@@ -67,12 +69,40 @@ const TourList: React.FC = () => {
                                 </div>
                             </div>
                             <p className="w-[300px] sm:w-[400px] overflow-hidden whitespace-nowrap text-nowrap text-xl sm:text-3xl md:text-4xl h-fit pb-[40px] text-center">{tour.name}</p>
-                            <button className="bg-black pl-10 pr-10 pt-2 pb-2 rounded-3xl text-amber-400 text-sm sm:text-xl">хочу записаться</button>
+                            <button onClick={() => setModalOpen(true)} className="bg-black pl-10 pr-10 pt-2 pb-2 rounded-3xl text-amber-400 text-sm sm:text-xl cursor-pointer">хочу записаться</button>
                             <Link to={`/tour/${tour.id}`}>подробнее</Link>
                         </SwiperSlide>
                     ))}
                 </Swiper>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+                <div className="flex flex-col justify-center items-center gap-8 w-11/12 m-auto">
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Имя</p>
+                        <input className="shadow-lg rounded-3xl w-full p-4" type="text"/>
+                    </div>
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Почта</p>
+                        <input className="shadow-lg rounded-3xl w-full p-4" type="email"/>
+                    </div>
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Количество участников</p>
+                        <input className="shadow-lg rounded-3xl w-full p-4" type="number"/>
+                    </div>
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Пожелания или вопросы</p>
+                        <textarea className="shadow-lg rounded-3xl w-full p-4 h-20 resize-none"/>
+                    </div>
+                    <div className="w-full flex gap-4">
+                        <input type="checkbox"/>
+                        <p>Возможность получения обеда</p>
+                    </div>
+                    <div className="w-full flex gap-4">
+                        <input type="checkbox"/>
+                        <p>Хотите получать уведомления о новых мероприятиях?</p>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

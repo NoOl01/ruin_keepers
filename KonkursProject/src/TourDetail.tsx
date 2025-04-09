@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
+import Modal from "./Components/Modal.tsx";
 
 
 interface Point {
@@ -23,6 +24,7 @@ interface Tour {
 const TourDetail: React.FC = () => {
     const {id} = useParams<{ id: string }>();
     const [tour, setTour] = useState<Tour | null>(null);
+    const [isModalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         axios.get(`../api/v1/tours/${id}`)
@@ -49,7 +51,7 @@ const TourDetail: React.FC = () => {
                         <p className="text-xl mt-2">Price: ${tour.price}</p>
                     </div>
                     <div className="ml-0 mt-5 md:ml-10 md:mt-0 lg:ml-20 lg:mt-0">
-                        <button className="bg-black pl-10 pr-10 pt-2 pb-2 rounded-3xl text-amber-400 text-xl">хочу записаться</button>
+                        <button onClick={() => setModalOpen(true)} className="bg-black pl-10 pr-10 pt-2 pb-2 rounded-3xl text-amber-400 text-xl cursor-pointer">хочу записаться</button>
                     </div>
                 </div>
             </div>
@@ -64,6 +66,34 @@ const TourDetail: React.FC = () => {
                     </div>
                 ))}
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+                <div className="flex flex-col justify-center items-center gap-8 w-11/12 m-auto">
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Имя</p>
+                        <input className="shadow-lg rounded-3xl w-full p-4" type="text"/>
+                    </div>
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Почта</p>
+                        <input className="shadow-lg rounded-3xl w-full p-4" type="email"/>
+                    </div>
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Количество участников</p>
+                        <input className="shadow-lg rounded-3xl w-full p-4" type="number"/>
+                    </div>
+                    <div className="w-full flex flex-col gap-4">
+                        <p>Пожелания или вопросы</p>
+                        <textarea className="shadow-lg rounded-3xl w-full p-4 h-20 resize-none"/>
+                    </div>
+                    <div className="w-full flex gap-4">
+                        <input type="checkbox"/>
+                        <p>Возможность получения обеда</p>
+                    </div>
+                    <div className="w-full flex gap-4">
+                        <input type="checkbox"/>
+                        <p>Хотите получать уведомления о новых мероприятиях?</p>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };
