@@ -41,15 +41,20 @@ const TourDetail: React.FC = () => {
         <div className="container mx-auto p-6">
             <div className="flex flex-col lg:flex-row">
                 <img src={`${tour.image}`} alt={tour.name} className="w-full lg:w-1/2 h-64 object-cover rounded-md"/>
-                <div className="lg:ml-6 mt-4 lg:mt-0">
-                    <h1 className="text-3xl font-semibold">{tour.name}</h1>
-                    <p className="text-lg mt-2">{tour.description}</p>
-                    <p className="mt-4">Place: {tour.place}</p>
-                    <p className="text-xl mt-2">Price: ${tour.price}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 lg:ml-6 mt-4 lg:mt-0">
+                    <div>
+                        <h1 className="text-3xl font-semibold">{tour.name}</h1>
+                        <p className="text-lg mt-2">{tour.description}</p>
+                        <p className="mt-4">Place: {tour.place}</p>
+                        <p className="text-xl mt-2">Price: ${tour.price}</p>
+                    </div>
+                    <div className="ml-0 mt-5 md:ml-10 md:mt-0 lg:ml-20 lg:mt-0">
+                        <button className="bg-black pl-10 pr-10 pt-2 pb-2 rounded-3xl text-amber-400 text-xl">хочу записаться</button>
+                    </div>
                 </div>
             </div>
 
-            <h2 className="text-2xl font-semibold mt-8">Points of Interest</h2>
+            <h2 className="text-2xl font-semibold mt-8">Точки интереса</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
                 {tour.points.map((point) => (
                     <div key={point.id} className="border rounded-lg p-4 shadow-md">

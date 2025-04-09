@@ -1,7 +1,6 @@
 import './App.css'
 import {BrowserRouter, Routes, Route, NavLink} from "react-router-dom";
 import About from "./About.tsx";
-import Gallery from "./Gallery.tsx";
 import TourDetail from "./TourDetail.tsx";
 import TourList from "./TourList.tsx";
 import logo from "./assets/logo.svg";
@@ -19,43 +18,32 @@ function App() {
     return (
         <BrowserRouter>
             <div className="w-full h-20 flex justify-around items-center">
+                <div className="flex gap-20 items-center">
+                    <img className="size-12" src={logo} alt=""/>
 
-                <img className="size-12" src={logo} alt=""/>
+                    <NavLink
+                        to="/"
+                        className={({isActive}) =>
+                                isActive
+                                    ? "text-yellow-500 text-2xl border-b-4 border-yellow-400 pb-1"
+                                    : "text-black text-2xl"
+                            }
+                    >
+                        О нас
+                    </NavLink>
 
-                <NavLink
-                    to="/"
-                    className={({isActive}) =>
-                        isActive
-                            ? "text-yellow-500 text-2xl border-b-4 border-yellow-400 pb-1"
-                            : "text-black text-2xl"
-                    }
-                >
-                    О нас
-                </NavLink>
+                    <NavLink
+                        to="/guides"
+                        className={({isActive}) =>
+                            isActive
+                                ? "text-yellow-500 text-2xl border-b-4 border-yellow-400 pb-1"
+                                : "text-black text-2xl"
+                        }
+                    >
+                        Туры
+                    </NavLink>
+                </div>
 
-                <NavLink
-                    to="/guides"
-                    className={({isActive}) =>
-                        isActive
-                            ? "text-yellow-500 text-2xl border-b-4 border-yellow-400 pb-1"
-                            : "text-black text-2xl"
-                    }
-                >
-                    Туры
-                </NavLink>
-
-                <NavLink
-                    to="/gallery"
-                    className={({isActive}) =>
-                        isActive
-                            ? "text-yellow-500 text-2xl border-b-4 border-yellow-400 pb-1"
-                            : "text-black text-2xl"
-                    }
-                >
-                    Галерея
-                </NavLink>
-
-                <div className="w-1/2"></div>
                 <p className="text-2xl cursor-pointer" onClick={handleCopy}>
                     +7 (952) 796-03-92
                 </p>
@@ -66,7 +54,6 @@ function App() {
 
                 <Route path="/" element={<About/>}/>
                 <Route path="/guides" element={<TourList/>}/>
-                <Route path="/gallery" element={<Gallery/>}/>
                 <Route path="/tour/:id" element={<TourDetail/>}/>
 
             </Routes>

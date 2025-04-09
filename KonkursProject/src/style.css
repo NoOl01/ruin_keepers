@@ -8,10 +8,14 @@
     border-radius: 30px !important;
     opacity: 1 !important;
 }
-.dawd{
-    background: url("assets/BgRound.svg") no-repeat center center fixed;
-}
 
 html, body, #root {
     @apply h-full;
+}
+
+@media (width >= 450px) {
+    .xsm-plr{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 }

@@ -110,13 +110,14 @@ export default function About() {
                 />
             </motion.div>
 
-            <div className="w-full flex h-80 justify-center items-center mt-20">
-                <div className="w-1/2 h-full bg-[#FFCD61] ">
-                    <p className="font-extrabold text-4xl">Присоидиняйтесь
+            <div className="w-full flex h-80 justify-center items-center mt-20 mb-20">
+                <div className="w-1/2 h-full bg-[url(assets/InviteBg.png)] bg-center bg-cover bg-no-repeat rounded-2xl p-5
+                flex flex-col justify-center items-start pl-15">
+                    <p className="font-extrabold text-5xl w-5/12">Присоидиняйтесь
                         к хранителям </p>
+                    <button className="bg-black mt-20 pl-10 pr-10 pt-2 pb-2 rounded-3xl text-white text-xl">хочу записаться</button>
                 </div>
             </div>
-
         </div>
     );
 }

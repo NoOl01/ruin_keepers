@@ -57,13 +57,11 @@ const NearestTour: React.FC = () => {
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="flex justify-center">{error}</div>;
   }
 
-  // Форматируем цену
   const formattedPrice = tour?.price ? tour.price.toString().replace(/[^0-9]/g, '') : 'Неизвестная цена';
 
-  // Форматируем даты
   const startDate = tour?.start_at ? new Date(tour.start_at) : new Date(); // если start_at не существует, используется текущая дата
   const endDate = tour?.end_at ? new Date(tour.end_at) : new Date(); // аналогично для end_at
 
